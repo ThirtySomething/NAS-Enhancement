@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  dper:
+    container_name: "samba"
+    image: dperson/samba
+    ports:
+      - "139:139"
+      - "445:445"
+    volumes:
+      - v_samba:/mount
+    restart: always
+
+volumes:
+  v_samba:

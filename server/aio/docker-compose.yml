@@ -1,0 +1,90 @@
+version: '3.7'
+
+services:
+  dui:
+    container_name: "portainer"
+    image: portainer/portainer:latest
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - v_portainer:/data
+    restart: always
+
+  scm:
+    container_name: "scm-manager"
+    image: sdorra/scm-manager:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - v_scm_manager:/var/lib/scm
+    restart: always
+
+  db:
+    container_name: "mariadb"
+    image: yobasystems/alpine-mariadb:latest
+    ports:
+      - "3306:3306"
+    volumes:
+      - v_mariadb:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: <SECRET PASSWORD HERE>
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+
+  dbui:
+    container_name: "phpmyadmin"
+    depends_on:
+      - db
+    links:
+      - db
+    ports:
+      - "8888:80"
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+
+  mqtt:
+    container_name: "mosquitto"
+    image:  eclipse-mosquitto:latest
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    restart: always
+    volumes:
+      - v_mosquitto_config:/mosquitto/config
+      - v_mosquitto_data:/mosquitto/data
+      - v_mosquitto_log:/mosquitto/log
+
+  st:
+    container_name: "syncthing"
+    image: syncthing/syncthing:latest
+    ports:
+      - "8384:8384"
+      - "22000:22000"
+    restart: always
+    volumes:
+      - v_syncthing:/var/syncthing
+
+  nc:
+    container_name: "nextcloud"
+    environment:
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD: <SECRET PASSWORD HERE>
+      MYSQL_HOST: <IP OF SERVER>:3306
+    image: nextcloud:latest
+    ports:
+      - "8765:80"
+    restart: always
+    volumes:
+      - v_nextcloud:/var/www/html
+
+volumes:
+  v_mariadb:
+  v_mosquitto_config:
+  v_mosquitto_log:
+  v_mosquitto_data:
+  v_nextcloud:
+  v_portainer:
+  v_scm_manager:
+  v_syncthing:

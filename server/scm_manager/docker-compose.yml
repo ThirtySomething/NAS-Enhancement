@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  scm_manager:
+    container_name: "scm-manager"
+    image: sdorra/scm-manager:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - v_scm_manager:/var/lib/scm
+    restart: always
+
+volumes:
+  v_scm_manager:
