@@ -26,10 +26,16 @@ hopefully a happy end.
   - [Syncthing][Syncthing]
   - [restic][restic]
 - Maybe it's neccessary to compose for each service an own Docker container.
+- Fill chapters for
+  - [ClamAV][ClamAV]
+  - [MinIO][MinIO]
+  - [PiHole][PiHole]
+  - [restic][restic]
 
 [ClamAV]: https://www.clamav.net
 [MinIO]: https://docs.min.io
 [NAS]: https://www.synology.com/en-global/company/news/article/Synology_Unveils_DiskStation_DS411slim
+[PiHole]: https://pi-hole.net/
 [Syncthing]: https://syncthing.net
 [ZBox]: https://www.zotac.com/ua/product/mini_pcs/id41-plus
 [restic]: https://restic.net

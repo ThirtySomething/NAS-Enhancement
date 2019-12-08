@@ -174,7 +174,7 @@ ziemlich schnell an ihre Grenzen. Grob skizziert sieht das in etwa so aus:
 \section{Die Idee}
 Die Idee ist, auf der ZBox ein Host-OS einzurichten, und zwar für
 \href{https://de.wikipedia.org/wiki/Docker_(Software)}{Docker}. Die oben erwähnten Applikationen sollen dann in Docker
-Containern laufen. Als Datenspeicher dient nach wie vor das NAS, jedoch wird der Festplattenplatz des NAS irgendiwe
+Containern laufen. Als Datenspeicher dient nach wie vor das NAS, jedoch wird der Festplattenplatz des NAS irgendwie
 in das Host-OS eingebunden und die Docker Container legen darauf ihre Daten ab. Irgendwie deswegen, da es ja
 verschiedene Möglichkeiten gibt:
 
@@ -204,7 +204,7 @@ Auswahl stehen unter anderem:
 \end{itemize}
 
 Von jedem OS wurde ein Testsystem in einer \href{https://www.virtualbox.org/}{Virtual Box} installiert und kurz
-angetestet. Wichtig ist für mich, daß keine speziellen Befehle zur Verwendung kommen, sondern daß sich das System sowie
+angetestet. Wichtig ist für mich, daß keine speziellen Befehle zur Verwendung kommen, sondern das sich das System sowie
 das Handling an die von mir gewohnten \href{https://www.debian.org/index.de.html} {Debian} basierten Systemen anlehnt.
 
 Nach verschiedenen Tests diesbezüglich habe ich mich erst einmal für Alpine Linux entschieden. Nicht nur für Container
@@ -232,7 +232,7 @@ bei keinem meiner Geräte so gemacht, sondern alle auf meinem Router entsprechen
 Damit ich nicht mit dem \code{root} Benutzer arbeiten muss, lege ich einen Benutzer für mich an. Davor installiere ich
 noch das Programm \href{https://de.wikipedia.org/wiki/Sudo}{sudo}, damit der neue Benutzer Root Berechtigung bekommen
 kann. Ergänzend kommt noch \href{https://curl.haxx.se/}{curl} hinzu, um über die Kommandozeile einfache Downloads zu
-ermöglichen. Ausserdem wird mit \href{http://hisham.hm/htop/index.php?page=main}{htop} noch ein übersichtlicherer
+ermöglichen. Ausserdem wird mit \href{https://hisham.hm/htop/index.php?page=main}{htop} noch ein übersichtlicherer
 Prozessmanager installiert.
 
 \begin{figure}[H]
@@ -249,8 +249,7 @@ visudo
 
 Damit kann ich mich mit \href{https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html}{Putty} remote an dem
 System anmelden und trotzdem alles mit \code{sudo} und Root Berechtigungen ausführen. In einem weiteren Schritt schalte
-ich \href{https://de.wikipedia.org/wiki/IPv6}{IPv6} ab. Ansonsten würde die ZBox versuchen, sich über jede IP mit dem
-NAS zu verbinden. Da das iSCSI-Target aber nur einmal verbunden sein darf, verhindere ich dies damit.
+ich \href{https://de.wikipedia.org/wiki/IPv6}{IPv6} ab. Die Erläuterung dazu folgt später.
 
 \begin{figure}[H]
 \begin{lstlisting}
@@ -398,7 +397,8 @@ sudo reboot
 \end{figure}
 
 \subsection{Nach dem Reboot}
-Nach einem Reboot sollte dann das Blockdevice an dem Mountpoint eingehängt sein. Das sieht in etwa so aus:
+Nach einem Reboot sollte dann das Blockdevice an dem als \code{/dev/sdb1} sichtbar sein.
+Die Festplatte wurde unter \code{/var/lib/docker} eingebunden. Das sieht in etwa so aus:
 
 \begin{figure}[H]
 \begin{lstlisting}
@@ -419,15 +419,13 @@ Mit Docker wird die Umgebung installiert, um mit Containern arbeiten zu können.
 sondern auch Docker Compose.
 
 \subsection{Installation von Docker}
-Auch Docker ist schnell installiert -- gibt es doch einen guten \href{https://wiki.alpinelinux.org/wiki/Docker}{Artikel}
+Docker ist schnell installiert -- gibt es doch einen guten \href{https://wiki.alpinelinux.org/wiki/Docker}{Artikel}
 hierzu in dem Wiki von Alpine Linux. Zuerst muss man in \code{/etc/apk/repositories} noch die
 \href{http://dl-cdn.alpinelinux.org/alpine/latest-stable/community}{Quelle} für Docker eintragen, dann ein \code{apk update}
 ausführen und schon kann man mit \code{apk add docker} Docker installieren.
 
 Damit Docker auch bei einem Neustart gestartet wird, muss man das noch dem System mit \code{rc-update add docker default}
-mitteilen. Wichtig ist der Runlevel \code{default} -- die Shares werden im Runlevel \code{boot} gemountet. Somit ist
-sichergestellt, dass Docker beim Start auch die relevanten Daten zur Verfügung hat. Um Docker gleich zu starten, kann
-man entweder das System neu booten oder ein \code{service docker start} eingeben.
+mitteilen.
 
 \begin{figure}[H]
 \begin{lstlisting}
@@ -493,7 +491,7 @@ Die Container sollen folgende Dienste zur Verfügung stellen -- aufgeführt in d
 und \href{https://subversion.apache.org/}{Subversion}.
 \item \href{https://mariadb.org/}{MariaDB} -- Datenbank für diverse Softwareprojekte.
 \item \href{https://www.phpmyadmin.net/}{phpMyAdmin} -- Oberfläche für die Datenbank.
-\item \href{https://mosquitto.org/}{Mosquitto} -- Ein \href{http://mqtt.org/}{MQTT} Broker, ebenfalls für diverse
+\item \href{https://mosquitto.org/}{Mosquitto} -- Ein \href{https://mqtt.org/}{MQTT} Broker, ebenfalls für diverse
 Softwareprojekte.
 \item \href{https://syncthing.net/}{Syncthing} -- Filesynchronisation zwischen PC und dem Server.
 \item \href{https://nextcloud.com/}{Nextcloud} -- Eine lokale Cloud.
@@ -630,7 +628,7 @@ UI erfolgt mit Benutername/Passwort \code{root}/\code{<ROOT PASSWORT>} -- dem Pa
 \subsection{Mosquitto}
 Da das \href{https://de.wikipedia.org/wiki/Internet_der_Dinge#targetText=Das%20Internet%20der%20Dinge%20(IdD,und%20Kommunikationstechniken%20zusammenarbeiten%20zu%20lassen.}{IoT},
 also das Internet der Dinge, immer mehr an Bedeutung gewinnt, habe ich mich für diverse Softwareprojekte auch mit diesem
-Thema auseinander gesetzt. Dazu gehört unter anderem das Protokoll \href{http://mqtt.org/}{MQTT}.
+Thema auseinander gesetzt. Dazu gehört unter anderem das Protokoll \href{https://mqtt.org/}{MQTT}.
 \href{https://mosquitto.org/}{Mosquitto} ist ein Broker, quasi das Herzstück dazu. Verwendet wird ist das offizielle
 \href{https://hub.docker.com/_/eclipse-mosquitto}{eclipse-mosquitto} Image.
 
@@ -652,14 +650,14 @@ sudo docker run -dit \
 \caption{Installation von Mosquitto}\label{fig:Installation von Mosquitto}
 \end{figure}
 
-Damit ist der MQTT Broker einsatzbereit und kann beispielsweise mit \href{http://mqtt-explorer.com/}{MQTT Explorer}
+Damit ist der MQTT Broker einsatzbereit und kann beispielsweise mit dem \href{https://mqtt-explorer.com/}{MQTT Explorer}
 getestet werden.
 
 \subsection{Syncthing}
 Das Synology NAS bringt von Haus aus eine Software mit, über die lokale Ordner und Dateien auf das NAS synchronisiert
 werden können. Da das NAS aber nur noch als Fileserver dienen soll, muss dazu eine Alternative verwendet werden.
 \href{https://syncthing.net/}{Syncthing} scheint mir dazu gut geeignet zu sein. Vor allem, da man diese Software nicht
-nur auf dem PC, sondern auch auf dem Handy laufen lassen kann.
+nur auf dem PC, sondern auch auf dem Smartphone laufen lassen kann.
 
 \begin{figure}[H]
 \begin{lstlisting}
@@ -775,6 +773,14 @@ sudo docker container restart samba
 \end{lstlisting}
 \caption{Samba Container}\label{fig:Samba Container}
 \end{figure}
+
+\subsection{ClamAV}
+
+\subsection{restic}
+
+\subsection{MinIO}
+
+\subsection{Pi-Hole}
 
 \section{All in One Docker File}\label{sec:AIOFile}
 Die Container habe ich zuerst manuell eingerichtet, um die für mich relevanten Einstellungen herauszufinden. Aber bei
