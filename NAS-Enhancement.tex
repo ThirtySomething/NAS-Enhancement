@@ -1,10 +1,11 @@
-\documentclass[12pt,a4paper]{article}
+\documentclass[12pt,a4paper,ngerman]{article}
 \usepackage{afterpage}
 \usepackage[toc,page]{appendix}
 \usepackage{amsmath,amssymb}
 \usepackage{array}
 \usepackage[ngerman]{babel}
-\usepackage[sfdefault,condensed]{cabin}
+\usepackage{booktabs}
+\usepackage{bitter}
 \usepackage[margin=10pt,font=small,labelfont=bf,labelsep=endash]{caption}
 \usepackage{color}
 \usepackage{etoolbox}
@@ -48,11 +49,11 @@
 
 \makeatletter
 \def\verbatim{
-    \scriptsize,
-    \@verbatim,
-    \frenchspacing,
-    \@vobeyspaces,
-    \@xverbatim,
+ \scriptsize,
+ \@verbatim,
+ \frenchspacing,
+ \@vobeyspaces,
+ \@xverbatim,
 }
 \makeatother
 
@@ -93,26 +94,27 @@ urlcolor=blue
 \newcommand{\code}[1]{\textit{#1}}
 \newcommand{\jpaimg}[2]{\begin{figure}[H]\centering\fbox{\includegraphics[width=380px]{#1}}\caption{#2}\label{fig:#2}\end{figure}}
 \newcommand{\jpaquote}[1]{\glqq{}#1\grqq{}}
+\newcommand{\jpacaption}[1]{\caption{#1}\label{fig:#1}}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
 \lstset{frame=tb,
-    language=sh,
-    aboveskip=3mm,
-    belowskip=3mm,
-    showstringspaces=false,
-    columns=flexible,
-    basicstyle={\scriptsize\ttfamily},
-    numbers=none,
-    numberstyle=\tiny\color{gray},
-    keywordstyle=\color{blue},
-    commentstyle=\color{dkgreen},
-    stringstyle=\color{mauve},
-    breaklines=true,
-    breakatwhitespace=true,
-    tabsize=3
+ language=sh,
+ aboveskip=3mm,
+ belowskip=3mm,
+ showstringspaces=false,
+ columns=flexible,
+ basicstyle={\scriptsize\ttfamily},
+ numbers=none,
+ numberstyle=\tiny\color{gray},
+ keywordstyle=\color{blue},
+ commentstyle=\color{dkgreen},
+ stringstyle=\color{mauve},
+ breaklines=true,
+ breakatwhitespace=true,
+ tabsize=3
 }
 
 \makeindex
@@ -120,20 +122,19 @@ urlcolor=blue
 \begin{document}
 \clearpage\maketitle
 \thispagestyle{empty}
-\newpage
+\clearpage
 
 \thispagestyle{fancy}
-\newpage
 \clearpage
 \tableofcontents
 \addtocontents{toc}{\protect\thispagestyle{fancy}}
-\newpage
+\clearpage
 
 \section{Motivation}
 Das \href{https://de.wikipedia.org/wiki/Network_Attached_Storage}{NAS}
-\href{https://www.synology.com/en-global/company/news/article/Synology_Unveils_DiskStation_DS411slim}{DS411Slim} von
-Synology bietet zahlreiche Features. Unter anderem kann die Funktionalität als reines NAS erweitert werden, zum Beispiel
-mit
+\href{https://www.synology.com/en-global/company/news/article/Synology_Unveils_DiskStation_DS411slim}{DS411Slim}
+von Synology bietet zahlreiche Features. Unter anderem kann die Funktionalität
+als reines NAS erweitert werden, zum Beispiel mit
 
 \begin{itemize}
     \item Einer \href{https://de.wikipedia.org/wiki/MariaDB}{Maria DB}
@@ -142,48 +143,89 @@ mit
     \item Einem \href{https://de.wikipedia.org/wiki/Antivirenprogramm}{Virenscanner}
 \end{itemize}
 
-Diese Erweiterungen werden von mir eingesetzt, und zwar zusätzlich zu den ab Werk installierten Features wie
+Diese Erweiterungen werden von mir eingesetzt, und zwar zusätzlich zu den ab
+Werk installierten Features wie
 
 \begin{itemize}
     \item Einem \href{https://de.wikipedia.org/wiki/Digital_Living_Network_Alliance}{DLNA} Server
     \item Einem \href{https://de.wikipedia.org/wiki/Dateiserver}{Dateiserver}
 \end{itemize}
 
-Mittlerweile ist das NAS etwas in die Jahre gekommen -- und wird leider nicht mehr von Synology unterstützt
-\footnote{\href{https://www.synology.com/de-de/releaseNote/DS411slim}{Siehe Version 6.2.1-23824}}. Es gibt nur noch
-Sicherheitsupdates, neue Features oder gar eine neue Variante des Diskstation Manager (DSM), dem Betriebssystem von
-Synology für ihre NAS-Produkte, sind ausgeschlossen.
+Mittlerweile ist das NAS etwas in die Jahre gekommen -- und wird von Synology
+seit der
+\href{https://www.synology.com/de-de/releaseNote/DS411slim}{Version 6.2.1-23824}
+nicht mehr unterstützt. Es gibt, falls überhaupt, nur noch Sicherheitsupdates.
+Neue Features oder eine neue Variante des
+\href{https://www.synology.com/de-de/dsm}{Diskstation Manager (DSM)},
+dem Betriebssystem von Synology für ihre NAS-Produkte, sind ausgeschlossen.
 
-Zudem ist die Hardware nicht leistungsfähig genug, um aktuelle Bedürfnisse zu befriedigen. Der
-\href{https://de.wikipedia.org/wiki/Prozessor}{Prozessor} ist laut
+Zudem ist die Hardware nicht leistungsfähig genug, um aktuelle Bedürfnisse zu
+befriedigen. Der \href{https://de.wikipedia.org/wiki/Prozessor}{Prozessor} ist
+laut
 \href{https://global.download.synology.com/download/Document/DataSheet/DiskStation/11-year/DS411slim/Synology_DS411slim_Data_Sheet_enu.pdf}{Dokumentation}
-ein \href{https://wikidevi.com/wiki/Marvell#Kirkwood}{Marvel Kirkwood}, welcher eine
-\href{https://de.wikipedia.org/wiki/ARM-Architektur}{ARMv5} Architektur hat. Dazu kommt, dass das NAS lediglich 256 MB
-RAM hat.
+ein
+\href{https://www.synology-wiki.de/index.php/Welchen_Prozessortyp_besitzt_mein_System%3F}{Marvel Kirkwood},
+welcher eine \href{https://de.wikipedia.org/wiki/ARM-Architektur}{ARMv5}
+Architektur hat. Dazu kommt, dass das NAS lediglich 256 MB RAM hat.
 
-Deswegen möchte ich meine \href{https://www.zotac.com/us/product/mini_pcs/id41-plus}{ZBox ID 41+} als Server vor dem
-NAS verwenden. Die ZBox hat einen \href{https://de.wikipedia.org/wiki/Intel_Atom}{Intel Atom D525} Prozessor. Diesem
-stehen zudem 4 GB RAM zur Seite -- das sollte mehr Performance bieten, als es dem NAS jemals möglich wäre.
+Deswegen möchte ich meine
+\href{https://www.zotac.com/us/product/mini_pcs/id41-plus}{ZBox ID41+}
+als Server vor dem NAS verwenden. Die ZBox hat einen
+\href{https://de.wikipedia.org/wiki/Intel_Atom}{Intel Atom D525} Prozessor.
+Diesem stehen zudem 4 GB RAM zur Seite -- das sollte mehr Performance bieten,
+als es dem NAS jemals möglich wäre.
+
+Zum Vergleich:
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{@{}llr@{}}
+        \toprule
+                    & Synology DS411Slim & ZBox ID41+      \\
+        \midrule
+        CPU         & Marvel Kirkwood    & Intel Atom D525 \\
+        Kerne       & 1                  & 2               \\
+        Architektur & ARMv5              & x86             \\
+        RAM         & 256MB              & 4GB             \\
+        \bottomrule
+    \end{tabular}
+    \caption{Vergleich CPU/RAM}\label{tab:Vergleich CPU/RAM}
+\end{table}
 
 \section{Aktueller Zustand}
-Aktuell ist ausschließlich das NAS in Verwendung. Da dabei ziemlich viele Dienste darauf laufen, kommt die Hardware
-ziemlich schnell an ihre Grenzen. Grob skizziert sieht das in etwa so aus:
+Aktuell ist ausschließlich das NAS in Verwendung. Da dabei ziemlich viele
+Dienste darauf laufen, kommt die Hardware ziemlich schnell an ihre Grenzen.
+Grob skizziert sieht das in etwa so aus:
 
 \jpaimg{./images/DS411Slim.png}{Aktueller Zustand}
 
+Konkret sind das folgende Pakete auf dem NAS:\@
+
+\begin{itemize}
+    \item Synchronisations-Server -- Cloud Station Server von Synology
+    \item Datenbank Server -- MariaDB von Synology
+    \item MQTT Broker -- Mosquitto von der Synology Community
+    \item AntiVirus -- Antivirus Essential von Synology
+    \item SVN Server -- SVN von Synology
+    \item DLNA Server -- Von Synology
+    \item Datei Server -- Samba, spezielle Version von Synology
+    \item Backup-Dienst -- Hyper Backup von Synology
+\end{itemize}
+
 \section{Die Idee}
 Die Idee ist, auf der ZBox ein Host-OS einzurichten, und zwar für
-\href{https://de.wikipedia.org/wiki/Docker_(Software)}{Docker}. Die oben erwähnten Applikationen sollen dann in Docker
-Containern laufen. Als Datenspeicher dient nach wie vor das NAS, jedoch wird der Festplattenplatz des NAS irgendwie
-in das Host-OS eingebunden und die Docker Container legen darauf ihre Daten ab. Irgendwie deswegen, da es ja
-verschiedene Möglichkeiten gibt:
+\href{https://de.wikipedia.org/wiki/Docker_(Software)}{Docker}. Die oben
+erwähnten Applikationen sollen dann in Docker Containern laufen. Als
+Datenspeicher dient nach wie vor das NAS, jedoch wird der Festplattenplatz des
+NAS irgendwie in das Host-OS eingebunden und die Docker Container legen darauf
+ihre Daten ab. Irgendwie deswegen, da es ja verschiedene Möglichkeiten gibt:
 
 \begin{itemize}
     \item Als Filesystem
-    \begin{itemize}
-        \item \href{https://de.wikipedia.org/wiki/Server_Message_Block}{SMB Share}
-        \item \href{https://de.wikipedia.org/wiki/Network_File_System}{NFS Share}
-    \end{itemize}
+          \begin{itemize}
+              \item \href{https://de.wikipedia.org/wiki/Server_Message_Block}{SMB Share}
+              \item \href{https://de.wikipedia.org/wiki/Network_File_System}{NFS Share}
+          \end{itemize}
     \item \href{https://de.wikipedia.org/wiki/ISCSI}{Als Blockdevice}
 \end{itemize}
 
@@ -193,82 +235,120 @@ Aus der Idee ergibt sich dann, grob skizziert, folgende Zielvorstellung:
 \jpaimg{./images/ZBoxDS411Slim.png}{Zielvorstellung}
 
 \section{Auswahl des Host-OS}
-Das Projektes beginnt am 31. Dezember 2018. Grundsätzlich könnte jede Linux Variante als Host Betriebssystem gewählt
-werden. Aber Linux wäre ja nicht Linux, wenn es nur eine Distribution für das Hosten von Docker Containern gäbe. Zur
-Auswahl stehen unter anderem:
+Das Projektes beginnt am 31. Dezember 2018. Grundsätzlich könnte jede Linux
+Variante als Host Betriebssystem gewählt werden. Aber Linux wäre ja nicht
+Linux, wenn es nur eine Distribution für das Hosten von Docker Containern gäbe.
+Zur Auswahl stehen unter anderem:
+
 \begin{itemize}
-	\item \href{https://alpinelinux.org/}{Alpine Linux}
-	\item \href{https://www.openmediavault.org/}{OpenMediaVault}
-	\item \href{https://vmware.github.io/photon/}{Photon}
-	\item \href{https://wiki.smartos.org/display/DOC/Welcome+to+SmartOS}{SmartOS}
+    \item \href{https://alpinelinux.org/}{Alpine Linux}
+    \item \href{https://www.openmediavault.org/}{OpenMediaVault}
+    \item \href{https://vmware.github.io/photon/}{Photon}
+    \item \href{https://wiki.smartos.org/display/DOC/Welcome+to+SmartOS}{SmartOS}
 \end{itemize}
 
-Von jedem OS wurde ein Testsystem in einer \href{https://www.virtualbox.org/}{Virtual Box} installiert und kurz
-angetestet. Wichtig ist für mich, daß keine speziellen Befehle zur Verwendung kommen, sondern das sich das System sowie
-das Handling an die von mir gewohnten \href{https://www.debian.org/index.de.html} {Debian} basierten Systemen anlehnt.
+Von jedem OS wurde ein Testsystem in einer
+\href{https://www.virtualbox.org/}{Virtual Box} installiert und kurz angetestet.
+Wichtig ist für mich, daß keine speziellen Befehle zur Verwendung kommen,
+sondern das sich das System sowie das Handling an die von mir gewohnten
+\href{https://www.debian.org/index.de.html} {Debian} basierten Systemen anlehnt.
 
-Nach verschiedenen Tests diesbezüglich habe ich mich erst einmal für Alpine Linux entschieden. Nicht nur für Container
-selbst wird das gerne verwendet; durch seine geringe Anforderungen kann es auch gut als Host-OS eingesetzt werden.
+Nach verschiedenen Tests diesbezüglich habe ich mich erst einmal für Alpine
+Linux entschieden. Nicht nur für Container selbst wird das gerne verwendet;
+durch seine geringe Anforderungen kann es auch gut als Host-OS eingesetzt
+werden.
 
 \section{Erstinstallation}
 \subsection{Das Host-OS}
-Zur Installation habe ich das \href{http://dl-cdn.alpinelinux.org/alpine/v3.8/releases/x86_64/alpine-standard-3.10.2-x86_64.iso}{Standard Image}\footnote{Zum
-Zeitpunkt der Veröffentlichung} verwendet. Davon ist schnell gebootet. Die\linebreak Anmeldung mit dem Benutzer \code{root}
-verlangt kein Kennwort. Den eigentlichen Installationsprozess startet man mit \code{setup-alpine}. Bei den abgefragten
+Zur Installation habe ich das
+\href{http://dl-cdn.alpinelinux.org/alpine/v3.8/releases/x86_64/alpine-standard-3.10.2-x86_64.iso}{Standard Image}\footnote{Zum
+    Zeitpunkt der Veröffentlichung} verwendet. Davon ist schnell gebootet. Die
+Anmeldung mit dem Benutzer \code{root} verlangt kein Kennwort. Den eigentlichen
+Installationsprozess startet man mit \code{setup-alpine}. Bei den abgefragten
 Einstellungen benutze ich im Regelfall den Default-Wert. Abweichend davon sind
 
 \begin{itemize}
-    \item Die Tastatur mit Layout \code{de} und Variante  \code{de}
+    \item Die Tastatur mit Layout \code{de} und Variante \code{de}
     \item Die Zeitzone mit \code{Europe/Berlin}
     \item Die Festplatte \code{sda} als \code{sys}
 \end{itemize}
 
-Das System ist dann in weniger als 10 Minuten aufgesetzt. Damit der Server auch immer die gleiche IP bekommt, richte ich
-das in meinem Router auch entsprechend ein. Damit kann ich innerhalb des Netzwerks immer auf die gleiche IP
-zurückgreifen. Alternativ könnte man auch eine statische IP auf dem Server selbst einrichten. Allerdings habe ich das
-bei keinem meiner Geräte so gemacht, sondern alle auf meinem Router entsprechend eingetragen.
+Das System ist dann in weniger als 10 Minuten aufgesetzt. Damit der Server auch
+immer die gleiche IP bekommt, richte ich das in meinem Router auch entsprechend
+ein. Damit kann ich innerhalb des Netzwerks immer auf die gleiche IP
+zurückgreifen. Alternativ könnte man auch eine statische IP auf dem Server
+selbst einrichten. Allerdings habe ich das bei keinem meiner Geräte so gemacht,
+sondern alle auf meinem Router entsprechend eingetragen.
 
 \subsection{Vorbereitungen}
-Damit ich nicht mit dem \code{root} Benutzer arbeiten muss, lege ich einen Benutzer für mich an. Davor installiere ich
-noch das Programm \href{https://de.wikipedia.org/wiki/Sudo}{sudo}, damit der neue Benutzer Root Berechtigung bekommen
-kann. Ergänzend kommt noch \href{https://curl.haxx.se/}{curl} hinzu, um über die Kommandozeile einfache Downloads zu
-ermöglichen. Ausserdem wird mit \href{https://hisham.hm/htop/index.php?page=main}{htop} noch ein übersichtlicherer
-Prozessmanager installiert.
+Damit ich nicht mit dem \code{root} Benutzer arbeiten muss, lege ich einen
+Benutzer für mich an. Davor installiere ich noch das Programm
+\href{https://de.wikipedia.org/wiki/Sudo}{sudo}, damit der neue Benutzer Root
+Berechtigung bekommen kann. Ergänzend kommt noch
+\href{https://curl.haxx.se/}{curl} hinzu, um über die Kommandozeile einfache
+Downloads zu ermöglichen. Ausserdem wird mit
+\href{https://hisham.hm/htop/index.php?page=main}{htop} noch ein
+übersichtlicherer Prozessmanager installiert.
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 # Install some tools which are default by other linux
 apk add sudo htop curl
 adduser admin
 visudo
 # Add the line at the end
-# admin    ALL=(ALL) ALL
-\end{lstlisting}
-\caption{Host Benutzer admin}\label{fig:Host Benutzer admin}
+# admin ALL=(ALL) ALL
+    \end{lstlisting}
+    \jpacaption{Host Benutzer admin}
 \end{figure}
 
-Damit kann ich mich mit \href{https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html}{Putty} remote an dem
-System anmelden und trotzdem alles mit \code{sudo} und Root Berechtigungen ausführen. In einem weiteren Schritt schalte
-ich \href{https://de.wikipedia.org/wiki/IPv6}{IPv6} ab. Die Erläuterung dazu folgt später.
+Damit kann ich mich mit
+\href{https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html}{Putty}
+remote an dem System anmelden und trotzdem alles mit \code{sudo} und Root
+Berechtigungen ausführen. In einem weiteren Schritt schalte ich
+\href{https://de.wikipedia.org/wiki/IPv6}{IPv6} ab. Die Erläuterung dazu folgt
+später.
 
 \begin{figure}[H]
-\begin{lstlisting}
-vi /etc/sysctl.conf
+    \begin{lstlisting}
+vi /etc/sysctl.d/local.conf
 # Add following line
 net.ipv6.conf.all.disable_ipv6 = 1
-\end{lstlisting}
-\caption{Host IPv6 abschalten}\label{fig:IPv6 abschalten}
+    \end{lstlisting}
+    \jpacaption{IPv6 abschalten}
+\end{figure}
+
+Zum Schluss sorgen wir noch dafür, dass die Systemzeit immer aktuell ist. Dazu
+holen wir einmal am Tag die Uhrzeit von einem Zeitserver. Das geht laut
+\href{https://wiki.alpinelinux.org/wiki/Alpine_Linux:FAQ#OpenNTPD_reports_an_error_with_.22adjtime.22}{Anleitung}
+so:
+
+\begin{figure}[H]
+    \begin{lstlisting}
+vi /etc/periodic/daily/do-ntp
+# Add following lines
+#!/bin/sh
+ntpd -d -q -n -p pool.ntp.org
+# Make file executable
+chmod +x /etc/periodic/daily/do-ntp
+    \end{lstlisting}
+    \jpacaption{Zeitsynchronisation}
 \end{figure}
 
 \section{Die Verbindung zum NAS}
-Bei meinen Versuchen mit verschiedenen Konstellationen von \href{https://de.wikipedia.org/wiki/Network_File_System}{NFS}-
-und \href{https://de.wikipedia.org/wiki/Server_Message_Block}{SMB}-Shares habe ich herausgefunden, dass das alles mehr
-oder weniger suboptimal ist.
+Bei meinen Versuchen mit verschiedenen Konstellationen von
+\href{https://de.wikipedia.org/wiki/Network_File_System}{NFS}- und
+\href{https://de.wikipedia.org/wiki/Server_Message_Block}{SMB}-Shares habe ich
+herausgefunden, dass das alles mehr oder weniger suboptimal ist.
 
-Docker selbst legt beim Start von Containern verschiedene mounts an. Damit gab es dann Konflikte mit Zugriffsrechten bei
-der Verarbeitung von Dateien. So funktionierte zwar \href{https://hub.docker.com/r/portainer/portainer/}{Portainer} ohne
-Probleme, aber schon \href{https://hub.docker.com/r/sdorra/scm-manager}{sdorra/scm-manager} verweigerte den Start wegen
-einem Berechtigungsproblem. Auch \href{https://hub.docker.com/r/yobasystems/alpine-mariadb}{yobasystems/alpine-mariadb}
+Docker selbst legt beim Start von Containern verschiedene mounts an. Damit gab
+es dann Konflikte mit Zugriffsrechten bei der Verarbeitung von Dateien. So
+funktionierte zwar
+\href{https://hub.docker.com/r/portainer/portainer/}{Portainer} ohne Probleme,
+aber schon der
+\href{https://hub.docker.com/r/sdorra/scm-manager}{SCM-Manager}
+verweigerte den Start wegen einem Berechtigungsproblem. Auch
+\href{https://hub.docker.com/r/yobasystems/alpine-mariadb}{MariaDB}
 konnte ich nicht ans Laufen bringen. Und das völlig unabhängig davon, ob
 
 \begin{itemize}
@@ -277,21 +357,174 @@ konnte ich nicht ans Laufen bringen. Und das völlig unabhängig davon, ob
     \item Als Share \href{https://de.wikipedia.org/wiki/Network_File_System}{NFS} verwendet wurde,
     \item Als Share \href{https://de.wikipedia.org/wiki/Server_Message_Block}{SMB} verwendet wurde,
     \item Ein bzw.\ mehrere absolute Pfade angegeben wurden,
-    \item Ein bzw.\ mehrere \href{https://nerdblog.steinkopf.net/2017/12/persistente-docker-volumes-mit-nfs-und-cifs/}{Volumes mit NFS} verwendet wurden,
-    \item Ein bzw.\ mehrere \href{https://nerdblog.steinkopf.net/2017/12/persistente-docker-volumes-mit-nfs-und-cifs/}{Volumes mit SMB} verwendet wurden.
+    \item Ein bzw.\ mehrere \href{https://nerdblog.steinkopf.net/2017/12/persistente-docker-volumes-mit-nfs-und-cifs/}{Docker Volumes mit NFS} verwendet wurden,
+    \item Ein bzw.\ mehrere \href{https://nerdblog.steinkopf.net/2017/12/persistente-docker-volumes-mit-nfs-und-cifs/}{Docker Volumes mit SMB} verwendet wurden.
 \end{itemize}
 
 Das Ergebnis war niederschmetternd.
 
-Erst als ich einen Versuch mit \href{https://de.wikipedia.org/wiki/ISCSI}{iSCSI} gemacht habe, waren meine Anstrengungen
-von Erfolg gekrönt. Mit iSCSI wird über das Netzwerk ein Block\-device zur Verfügung gestellt. Beim Start des HostOS
-wird das Blockdevice dann wie eine konventionelle Festplatte in das System eingebunden. Docker merkt dann nicht, dass
-die Festplatte irgendwo im Netzwerk liegt und verwendet sie wie eine lokale Festplatte. Damit haben dann oben genannte
-Container funktioniert.
+Erst als ich einen Versuch mit \href{https://de.wikipedia.org/wiki/ISCSI}{iSCSI}
+gemacht habe, waren meine Anstrengungen von Erfolg gekrönt. Mit iSCSI wird über
+das Netzwerk ein Blockdevice zur Verfügung gestellt. Beim Start des HostOS
+wird das Blockdevice dann wie eine konventionelle Festplatte in das
+System eingebunden. Docker merkt dann nicht, dass die Festplatte irgendwo im
+Netzwerk liegt und verwendet sie wie eine lokale Festplatte. Damit haben dann
+oben genannte Container funktioniert.
 
-\subsection{iSCSI-Target auf dem NAS anlegen}
-Damit auf der ZBox die virtuelle Festplatte eingebunden werden kann, muss sie vorher auf dem NAS angelegt werden. Das
-geht mit dem iSCSI-Manager.
+\subsection{Via NFS Share}
+
+\subsubsection{NFS auf dem NAS}
+
+\subsubsection{NFS auf der ZBox}
+Bevor wir einen NFS Share nutzen können, müssen die dazu notwendigen Tools
+installiert sein. Dazu loggen wir uns mit dem neuen Benutzer \code{admin} ein
+und geben folgenden Befehle ein:
+
+\begin{figure}[H]
+    \begin{lstlisting}
+sudo apk add nfs-utils
+sudo rc-update add nfsmount
+sudo rc-service nfsmount start
+    \end{lstlisting}
+    \jpacaption{NFS Client einrichten}
+\end{figure}
+
+Damit haben wir jetzt den NFS Client eingerichtet, ganz wie es in der Anleitung
+dazu
+\href{https://www.hiroom2.com/2017/08/22/alpinelinux-3-6-nfs-utils-client-en/}{hier}
+beschrieben ist.
+
+\subsubsection{NFS Share mounten}
+Damit dieser Share permanent verfügbar wird, müssen wir ihn auch mounten.
+Zuerst legen wir das Zielverzeichnis an -- hierhin wird der Share gemountet.
+Dann tragen wir folgendes in die \code{/etc/fstab} ein:
+
+\begin{figure}[H]
+    \begin{lstlisting}
+sudo mkdir /var/lib/docker
+sudo vi /etc/fstab
+# Add the following line
+<IP OF NAS>:<PATH OF SHARE> /var/lib/docker nfs auto,rw,rsize=8192,wsize=8192,timeo=14,intr 0 0
+    \end{lstlisting}
+    \jpacaption{NFS Share eintragen}
+\end{figure}
+
+Das Zielverzeichnis wissen wir, weil später Docker genau dort hin installiert
+wird. Nach einem Reboot prüfen wir, ob der Share verbunden ist:
+
+\begin{figure}[H]
+    \begin{lstlisting}
+zbox:~$ sudo df -h
+[sudo] password for admin:
+Filesystem Size Used Available Use% Mounted on
+devtmpfs 10.0M 0 10.0M 0% /dev
+shm 1.9G 0 1.9G 0% /dev/shm
+/dev/sda3 15.6G 819.4M 14.0G 5% /
+tmpfs 393.8M 144.0K 393.6M 0% /run
+/dev/sda1 92.8M 22.5M 63.4M 26% /boot
+<IP OF NAS>:<PATH OF SHARE>
+3.6T 1.9T 1.6T 54% /var/lib/docker
+    \end{lstlisting}
+    \jpacaption{NFS Share verbunden}
+\end{figure}
+
+Wenn wir die letzte Zeile finden und der Share auf \code{/var/lib/docker}
+gemountet ist, haben wir alles richtig gemacht.
+
+\subsection{Via SMB Share}
+
+\subsubsection{SMB auf dem NAS}
+
+\subsubsection{SMB auf der ZBox}
+Zuerst müssen wir die notwendigen Tools installieren:
+
+\begin{figure}[H]
+    \begin{lstlisting}
+sudo apk add cifs-utils
+    \end{lstlisting}
+    \jpacaption{CIFS Utils}
+\end{figure}
+
+\subsubsection{SMB Share mounten}
+Zuerst tragen wir den Benutzernamen und das Passwort für die Verbindung in eine
+eigene Datei ein. Diese ist nur für den Benutzer \code{root} sichtbar -- die
+\code{fstab} kann jeder Benutzer einsehen.
+
+\begin{figure}[H]
+    \begin{lstlisting}
+sudo vi /root/.docker_smb
+# Add following lines
+username=<SMB USERNAME>
+password=<SMB PASSWORD>
+domain=<SMB DOMAIN>
+# Make file readonly for root
+sudo chmod 600 /root/.docker_smb
+    \end{lstlisting}
+    \jpacaption{SMB Zugangsdaten}
+\end{figure}
+
+Damit dieser Share permanent verfügbar wird, müssen wir ihn auch mounten. Zuerst
+legen wir das Zielverzeichnis \code{/var/lib/docker} an, dann tragen wir
+folgendes in die \code{/etc/fstab} ein:
+
+\begin{figure}[H]
+    \begin{lstlisting}
+sudo mkdir /var/lib/docker
+sudo vi /etc/fstab
+# Add the following line
+//<IP OF NAS>/<PATH OF SHARE> /var/lib/docker cifs uid=0,gid=0,credentials=/root/.docker_smb,_netdev 0 0
+    \end{lstlisting}
+    \jpacaption{SMB Share eintragen}
+\end{figure}
+
+Da der Pfad eventuell nicht ganz klar ist, hier ein Beispiel. Das NAS hat die
+IP \code{192.168.71.75}. Als Share dient das Home-Verzeichnis des Benutzers
+aus der Datei \code{/root/.docker\_smb}, die wir eben angelegt haben.
+
+\begin{figure}[H]
+    \begin{lstlisting}
+<//192.168.1.75/home> /var/lib/docker cifs uid=0,gid=0,credentials=/root/.docker_smb,_netdev 0 0
+    \end{lstlisting}
+    \jpacaption{SMB Share Beispiel}
+\end{figure}
+
+Damit das Netzlaufwerk beim Start automatisch verbunden wird, muss man das noch
+aktivieren. Das geht so:
+
+\begin{figure}[H]
+    \begin{lstlisting}
+# Enable mount of network shares
+sudo rc-update add netmount
+    \end{lstlisting}
+    \jpacaption{SMB beim Starten verbinden}
+\end{figure}
+
+Das Zielverzeichnis wissen wir, weil später Docker genau dort hin installiert
+wird. Nach einem Reboot prüfen wir, ob der Share verbunden ist:
+
+\begin{figure}[H]
+    \begin{lstlisting}
+zbox:~$ sudo df -h
+[sudo] password for admin:
+Filesystem Size Used Available Use% Mounted on
+devtmpfs 10.0M 0 10.0M 0% /dev
+shm 1.9G 0 1.9G 0% /dev/shm
+/dev/sda3 15.6G 819.4M 14.0G 5% /
+tmpfs 393.8M 144.0K 393.6M 0% /run
+/dev/sda1 92.8M 22.5M 63.4M 26% /boot
+<//IP OF NAS/PATH OF SHARE>
+ 3.6T 1.9T 1.6T 54% /var/lib/docker
+\end{lstlisting}
+    \jpacaption{SMB Share verbunden}
+\end{figure}
+
+Und jetzt der \href{https://unix.stackexchange.com/questions/198590/what-is-a-bind-mount}{Bind-Mount}!
+
+\subsection{Via iSCSI}
+
+\subsubsection{iSCSI-Target auf dem NAS anlegen}
+Damit auf der ZBox die virtuelle Festplatte eingebunden werden kann, muss sie
+vorher auf dem NAS angelegt werden. Das geht mit dem iSCSI-Manager.
 
 \jpaimg{./images/DSM-ISCSI-01.png}{Der initiale Start des iSCSI-Managers}
 
@@ -301,25 +534,29 @@ geht mit dem iSCSI-Manager.
 
 \jpaimg{./images/DSM-ISCSI-04.png}{Das dazugehörige LUN mit 100GB anlegen}
 
-Die Größe von 100 GB ist hier exemplarisch zu sehen. Je nachdem, wieviel man von der NAS-Kapazität nutzen möchte, muss
-das natürlich angepasst werden.
+Die Größe von 100 GB ist hier exemplarisch zu sehen. Je nachdem, wieviel man
+von der NAS-Kapazität nutzen möchte, muss das natürlich angepasst werden.
 
 \jpaimg{./images/DSM-ISCSI-05.png}{Die Zusammenfassung}
 
 \jpaimg{./images/DSM-ISCSI-06.png}{Das Ergebnis}
 
-Wichtig ist dann noch, dass prinzipiell nur ein Netzwerkprotokoll aktiv ist. Ansonsten versucht die ZBox, sich auf jede
-IP zu verbinden. Da das Host OS sowohl \href{https://de.wikipedia.org/wiki/IPv4}{IPv4} als auch \href{https://de.wikipedia.org/wiki/IPv6}{IPv6}
-verwendet, kann das zu Problemen führen. Ich habe mich dazu entschieden, auf dem NAS ausschließlich \href{https://de.wikipedia.org/wiki/IPv4}{IPv4}
-zu verwenden.
+Wichtig ist dann noch, dass prinzipiell nur ein Netzwerkprotokoll aktiv ist.
+Ansonsten versucht die ZBox, sich auf jede IP zu verbinden. Da das Host OS
+sowohl \href{https://de.wikipedia.org/wiki/IPv4}{IPv4} als auch
+\href{https://de.wikipedia.org/wiki/IPv6}{IPv6} verwendet, kann das zu
+Problemen führen. Ich habe mich dazu entschieden, auf dem NAS ausschließlich
+\href{https://de.wikipedia.org/wiki/IPv4}{IPv4} zu verwenden.
 
-\subsection{iSCSI auf der ZBox}
-Nachdem das iSCSI-Target auf dem NAS angelegt wurde, wird es nun auf der ZBox eingebunden. Das Ergebnis ist eine Mischung
-aus der \href{https://wiki.alpinelinux.org/wiki/ISCSI_Raid_and_Clustered_File_Systems}{Anleitung für eine Initiator Config}
-sowie diesem \href{https://kifarunix.com/how-to-install-and-configure-iscsi-storage-server-on-ubuntu-18-04/}{How-To}.
+\subsubsection{iSCSI auf der ZBox}
+Nachdem das iSCSI-Target auf dem NAS angelegt wurde, wird es nun auf der ZBox
+eingebunden. Das Ergebnis ist eine Mischung aus der
+\href{https://wiki.alpinelinux.org/wiki/ISCSI_Raid_and_Clustered_File_Systems}{Anleitung für eine Initiator Config}
+sowie diesem
+\href{https://kifarunix.com/how-to-install-and-configure-iscsi-storage-server-on-ubuntu-18-04/}{How-To}.
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 # Install required packages
 sudo apk add open-iscsi util-linux
 
@@ -335,28 +572,28 @@ sudo vi /etc/iscsi/initiatorname.iscsi
 # Add service to default runlevel and start it
 sudo rc-update add iscsid default
 sudo rc-service iscsid start
-\end{lstlisting}
-\caption{Installation von open-iscsi}\label{fig:Installation von open-iscsi}
+    \end{lstlisting}
+    \jpacaption{Installation von open-iscsi}
 \end{figure}
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 # Discover possible targets
 sudo iscsiadm -m discovery -t sendtargets -p <IP OF NAS>
 # Login to specific target
 sudo iscsiadm -m node -T <TARGET NAME OF NAS> -l
-\end{lstlisting}
-\caption{Einbinden des iSCSI-Target}\label{fig:Einbinden des iSCSI-Target}
+    \end{lstlisting}
+    \jpacaption{Einbinden des iSCSI-Target}
 \end{figure}
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 # Figure out new attached drive
 sudo lsblk --scsi
-# NAME HCTL       TYPE VENDOR   MODEL             REV TRAN
-# sda  0:0:0:0    disk ATA      VBOX HARDDISK    1.0  sata
-# sdb  3:0:0:1    disk SYNOLOGY iSCSI Storage    3.1  iscsi
-# sr0  2:0:0:0    rom  VBOX     CD-ROM           1.0  ata
+# NAME HCTL TYPE VENDOR MODEL REV TRAN
+# sda 0:0:0:0 disk ATA VBOX HARDDISK 1.0 sata
+# sdb 3:0:0:1 disk SYNOLOGY iSCSI Storage 3.1 iscsi
+# sr0 2:0:0:0 rom VBOX CD-ROM 1.0 ata
 # NAS is connected as /dev/sdb
 
 sudo fdisk /dev/sdb
@@ -369,12 +606,12 @@ sudo fdisk /dev/sdb
 
 # Format partition 1
 sudo mkfs.ext4 /dev/sdb1
-\end{lstlisting}
-\caption{Filesystem einrichten}\label{fig:Filesystem einrichten}
+    \end{lstlisting}
+    \jpacaption{Filesystem einrichten}
 \end{figure}
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 # Create mount point
 sudo mkdir /var/lib/docker
 
@@ -385,50 +622,76 @@ sudo blkid /dev/sdb1
 sudo vi /etc/fstab
 
 # Add following line
-# UUID=<UUID OF /dev/sdb1>   /var/lib/docker   ext4   _netdev   0 0
+# UUID=<UUID OF /dev/sdb1> /var/lib/docker ext4 _netdev 0 0
 
 # Start netmount on boot
 sudo rc-update add netmount
 
 # Reboot the system
 sudo reboot
-\end{lstlisting}
-\caption{Automount einrichten}\label{fig:Automount einrichten}
+    \end{lstlisting}
+    \jpacaption{Automount einrichten}
 \end{figure}
 
-\subsection{Nach dem Reboot}
-Nach einem Reboot sollte dann das Blockdevice an dem als \code{/dev/sdb1} sichtbar sein.
-Die Festplatte wurde unter \code{/var/lib/docker} eingebunden. Das sieht in etwa so aus:
+\subsubsection{Nach dem Reboot}
+Nach einem Reboot sollte dann das Blockdevice an dem als \code{/dev/sdb1}
+sichtbar sein. Die Festplatte wurde unter \code{/var/lib/docker} eingebunden.
+Das sieht in etwa so aus:
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 $ df
-Filesystem           1K-blocks      Used Available Use% Mounted on
-devtmpfs                 10240         0     10240   0% /dev
-shm                    2023296         0   2023296   0% /dev/shm
-/dev/sda3             16346492    724524  14771896   5% /
-tmpfs                   404660       116    404544   0% /run
-/dev/sda1                95054     20749     67137  24% /boot
-/dev/sdb1            102687640     61464  97366916   0% /var/lib/docker
-\end{lstlisting}
-\caption{Anzeige der Laufwerke}\label{fig:Anzeige der Laufwerke}
+Filesystem 1K-blocks Used Available Use% Mounted on
+devtmpfs 10240 0 10240 0% /dev
+shm 2023296 0 2023296 0% /dev/shm
+/dev/sda3 16346492 724524 14771896 5% /
+tmpfs 404660 116 404544 0% /run
+/dev/sda1 95054 20749 67137 24% /boot
+/dev/sdb1 102687640 61464 97366916 0% /var/lib/docker
+    \end{lstlisting}
+    \jpacaption{Anzeige der Laufwerke}
+\end{figure}
+
+\subsection{Remote Volumes}
+Man kann auch die Volumes direkt auf das NAS legen.
+
+\subsubsection{NFS Volumes}
+Für NFS müssen wir zuerst die notwendigen Tools installieren:
+
+\begin{figure}[H]
+    \begin{lstlisting}
+sudo apk add nfs-utils
+    \end{lstlisting}
+    \jpacaption{NFS Utilities installieren}
+\end{figure}
+
+\subsubsection{SMB Volumes}
+Für SMB müssen wir zuerst die notwendigen Tools installieren:
+
+\begin{figure}[H]
+    \begin{lstlisting}
+sudo apk add cifs-utils
+    \end{lstlisting}
+    \jpacaption{CIFS Utils}
 \end{figure}
 
 \section{Docker Umgebung}
-Mit Docker wird die Umgebung installiert, um mit Containern arbeiten zu können. Dazu zählt nicht nur Docker selbst,
-sondern auch Docker Compose.
+Mit Docker wird die Umgebung installiert, um mit Containern arbeiten zu können.
+Dazu zählt nicht nur Docker selbst, sondern auch Docker Compose.
 
 \subsection{Installation von Docker}
-Docker ist schnell installiert -- gibt es doch einen guten \href{https://wiki.alpinelinux.org/wiki/Docker}{Artikel}
-hierzu in dem Wiki von Alpine Linux. Zuerst muss man in \code{/etc/apk/repositories} noch die
-\href{http://dl-cdn.alpinelinux.org/alpine/latest-stable/community}{Quelle} für Docker eintragen, dann ein \code{apk update}
-ausführen und schon kann man mit \code{apk add docker} Docker installieren.
+Docker ist schnell installiert -- gibt es doch einen guten
+\href{https://wiki.alpinelinux.org/wiki/Docker}{Artikel} hierzu in dem Wiki von
+Alpine Linux. Zuerst muss man in \code{/etc/apk/repositories} noch die
+\href{http://dl-cdn.alpinelinux.org/alpine/latest-stable/community}{Quelle} für
+Docker eintragen, dann ein \code{apk update} ausführen und schon kann man mit
+\code{apk add docker} Docker installieren.
 
-Damit Docker auch bei einem Neustart gestartet wird, muss man das noch dem System mit \code{rc-update add docker default}
-mitteilen.
+Damit Docker auch bei einem Neustart gestartet wird, muss man das noch dem
+System mit \code{rc-update add docker default} mitteilen.
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 sudo vi /etc/apk/repositories
 # Add the following row without the hash:
 # http://dl-cdn.alpinelinux.org/alpine/edge/community
@@ -436,316 +699,415 @@ sudo apk update
 sudo apk add docker
 sudo rc-update add docker default
 sudo service docker start
-\end{lstlisting}
-\caption{Installation von Docker}\label{fig:Installation von Docker}
+    \end{lstlisting}
+    \jpacaption{Installation von Docker}
 \end{figure}
 
 \subsection{Installation von Docker Compose}
-Um später auch mit \href{https://docs.docker.com/compose/}{Docker Compose} arbeiten zu können, installieren wir das
-gleich mit. Dazu folgen wir der offiziellen \href{https://docs.docker.com/compose/install/}{Anleitung}.
+Um später auch mit \href{https://docs.docker.com/compose/}{Docker Compose}
+arbeiten zu können, installieren wir das gleich mit. Dazu folgen wir der
+offiziellen \href{https://docs.docker.com/compose/install/}{Anleitung}.
 
 \begin{figure}[H]
-\begin{lstlisting}
-sudo apk add py-pip python-dev libffi-dev openssl-dev gcc libc-dev make
+    \begin{lstlisting}
+sudo apk add py-pip python3-dev libffi-dev openssl-dev gcc libc-dev make
 sudo pip install --upgrade pip
 sudo pip install docker-compose
-\end{lstlisting}
-\caption{Installation von Docker Compose}\label{fig:Installation von Docker Compose}
+    \end{lstlisting}
+    \jpacaption{Installation von Docker Compose}
 \end{figure}
 
 \subsection{Abhängigkeiten}
-Da sowohl Docker als auch das Netzlaufwerk im Runlevel \code{default} gestartet werden, kann es unter Umständen zu einem
-Problem kommen: Docker wird gestartet, bevor das Netz\-laufwerk verbunden ist. Das wäre sehr unangenehm, denn dann würde
-kein Container starten. Also sorgen wir dafür, daß das nicht zu einem Problem wird, indem wir Docker noch die
-Abhängigkeiten von \code{iscsid}, dem Daemon für das iSCSI, sowie \code{netmount}, dem Verbinden von Netzlaufwerken,
+Da sowohl Docker als auch das Netzlaufwerk im Runlevel \code{default} gestartet
+werden, kann es unter Umständen zu einem Problem kommen: Docker wird gestartet,
+bevor das Netzlaufwerk verbunden ist. Das wäre sehr unangenehm, denn dann würde
+kein Container starten. Also sorgen wir dafür, daß das nicht zu einem Problem
+wird, indem wir Docker noch die Abhängigkeiten von \code{iscsid}, dem Daemon
+für das iSCSI, sowie \code{netmount}, dem Verbinden von Netzlaufwerken,
 mitteilen.
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 sudo vi /etc/init.d/docker
 # Extend
 #
 # depend() {
-#        need sysfs cgroups
+# need sysfs cgroups
 # }
 #
 # With
 #
 # depend() {
-#        need sysfs cgroups iscsid netmount
+# need sysfs cgroups iscsid netmount
+# need sysfs cgroups nfsmount
 # }
 \end{lstlisting}
-\caption{Docker Abhängigkeiten}\label{fig:Docker Abhängigkeiten}
+    \jpacaption{Docker Abhängigkeiten}
 \end{figure}
 
 \section{Die Container}
-Hier wird die Installation von verschiedenen Containern beschrieben, welche ich auf meinem Server verwenden möchte.
+Hier wird die Installation von verschiedenen Containern beschrieben, welche ich
+auf meinem Server verwenden möchte.
 
 \subsection{Containerliste}
 Die Container sollen folgende Dienste zur Verfügung stellen -- aufgeführt in der Reihenfolge, wie sie installiert werden:
 
 \begin{figure}[H]
-\begin{itemize}
-\item \href{https://www.portainer.io/}{Portainer} -- Oberfläche für Docker.
-\item \href{https://www.scm-manager.org/}{SCM-Manager} -- Oberfläche zu den Versionierungssystememen \href{https://git-scm.com/}{Git}
-und \href{https://subversion.apache.org/}{Subversion}.
-\item \href{https://mariadb.org/}{MariaDB} -- Datenbank für diverse Softwareprojekte.
-\item \href{https://www.phpmyadmin.net/}{phpMyAdmin} -- Oberfläche für die Datenbank.
-\item \href{https://mosquitto.org/}{Mosquitto} -- Ein \href{https://mqtt.org/}{MQTT} Broker, ebenfalls für diverse
-Softwareprojekte.
-\item \href{https://syncthing.net/}{Syncthing} -- Filesynchronisation zwischen PC und dem Server.
-\item \href{https://nextcloud.com/}{Nextcloud} -- Eine lokale Cloud.
-
-\item \href{https://www.samba.org/}{Samba} -- Dateiserver.
-\item \href{https://www.clamav.net/}{ClamAV} -- (Anti-) Viren Scanner.
-\item \href{https://restic.net/}{restic} -- Datensicherung.
-\item \href{https://docs.min.io/}{MinIO} -- Als Ziel für die Datensicherung.
-\item \href{https://pi-hole.net/}{Pi-Hole} -- Werbeblocker für das lokale Netzwerk.
-\end{itemize}
-\caption{Containerliste}\label{fig:Containerliste}
+    \begin{itemize}
+        \item \href{https://www.portainer.io/}{Portainer} -- Oberfläche für Docker.
+        \item \href{https://www.scm-manager.org/}{SCM-Manager} -- Oberfläche zu den Versionierungssystememen \href{https://git-scm.com/}{Git}
+              und \href{https://subversion.apache.org/}{Subversion}.
+        \item \href{https://mariadb.org/}{MariaDB} -- Datenbank für diverse Softwareprojekte.
+        \item \href{https://www.phpmyadmin.net/}{phpMyAdmin} -- Oberfläche für die Datenbank.
+        \item \href{https://mosquitto.org/}{Mosquitto} -- Ein \href{https://mqtt.org/}{MQTT} Broker, ebenfalls für diverse
+              Softwareprojekte.
+        \item \href{https://syncthing.net/}{Syncthing} -- Filesynchronisation zwischen PC und dem Server.
+        \item \href{https://nextcloud.com/}{Nextcloud} -- Eine lokale Cloud.
+        \item \href{https://www.samba.org/}{Samba} -- Dateiserver.
+        \item \href{https://www.clamav.net/}{ClamAV} -- (Anti-) Viren Scanner.
+        \item Datensicherung
+              \begin{itemize}
+                  \item \href{https://restic.net/}{restic}
+                  \item \href{https://www.duplicati.com/}{Duplicati}
+              \end{itemize}
+        \item \href{https://docs.min.io/}{MinIO} -- Als Ziel für die Datensicherung.
+        \item \href{https://pi-hole.net/}{Pi-Hole} -- Werbeblocker für das lokale Netzwerk.
+    \end{itemize}
+    \jpacaption{Containerliste}
 \end{figure}
 
-Nicht aufgezählt sind dann die Container, die in der Zukunft noch dazu kommen werden -- was auch immer mir da noch
-einfallen mag\ldots
+Nicht aufgezählt sind dann die Container, die in der Zukunft noch dazu kommen
+werden -- was auch immer mir da noch einfallen mag\ldots
 
 \subsection{Portainer}\label{sub:Portainer}
-Damit man sich nicht so mit der Kommandozeile herumschlagen muß, wird \href{https://hub.docker.com/r/portainer/portainer/}{Portainer}
-als Frontend zu Docker installiert. Damit sollte es etwas komfortabler sein, die gewünschten Ziele zu erreichen. Damit
-die Daten/Einstellungen persistent gemacht werden können, braucht es ein Docker Volume.
+Damit man sich nicht so mit der Kommandozeile herumschlagen muß, wird
+\href{https://hub.docker.com/r/portainer/portainer/}{Portainer} als Frontend zu
+Docker installiert. Damit sollte es etwas komfortabler sein, die gewünschten
+Ziele zu erreichen. Damit die Daten/Einstellungen persistent gemacht werden
+können, braucht es ein Docker Volume.
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
+# Local volume
 sudo docker volume create --name v_portainer
+
+# Remote volume using cifs
+sudo docker volume create \
+ --driver local \
+ --opt type=cifs \
+ --opt device=//192.168.71.10/dockerfs/v_portainer \
+ --opt o=username=docker,password=cul8er,file_mode=0777,dir_mode=0777 \
+ --name v_portainer
+
+ # Remote volume using nfs
+ sudo docker volume create \
+ --driver local \
+ --opt type=nfs4 \
+ --opt o=addr=192.168.71.10,rw \
+ --opt device=:/volume1/dockerfs/v_portainer \
+ --name v_portainer
+
+ # Creation of container
 sudo docker run -dit \
-    --restart unless-stopped \
-    --name portainer \
-    -p 9000:9000 \
-    -v /var/run/docker.sock:/var/run/docker.sock \
-    -v v_portainer:/data \
-    -d portainer/portainer:latest
+ --restart unless-stopped \
+ --name portainer \
+ -p 9000:9000 \
+ -v /var/run/docker.sock:/var/run/docker.sock \
+ -v v_portainer:/data \
+ -d portainer/portainer:latest
 \end{lstlisting}
-\caption{Installation von Portainer}\label{fig:Installation von Portainer}
+    \jpacaption{Installation von Portainer}
 \end{figure}
 
-Wichtig ist hierbei der Teil \code{--restart unless-stopped} -- damit wird der Docker Container automatisch beim
-Hochfahren des Systems gestartet. Portainer selbst ist eine Webapplikation, die man über den entsprechenden Port
-(Default ist 9000) aufrufen kann. Bei der ersten Anmeldung muss man einen Account anlegen und ein Passwort dazu vergeben.
+Wichtig ist hierbei der Teil \code{--restart unless-stopped} -- damit wird der
+Docker Container automatisch beim Hochfahren des Systems gestartet. Portainer
+selbst ist eine Webapplikation, die man über den entsprechenden Port (Default
+ist 9000) aufrufen kann. Bei der ersten Anmeldung muss man einen Account anlegen
+und ein Passwort dazu vergeben.
 
 \jpaimg{./images/Portainer-01.png}{Erste Anmeldung an Portainer}
 
-Im zweiten Schritt gibt man an, ob man mit Portainer den lokalen Host oder einen Remote Host verwalten möchte. Hier ist
-ganz klar der lokale Host gewünscht.
+Im zweiten Schritt gibt man an, ob man mit Portainer den lokalen Host oder einen
+Remote Host verwalten möchte. Hier ist ganz klar der lokale Host gewünscht.
 
 \jpaimg{./images/Portainer-02.png}{Verbindung von Portainer an Localhost}
 
-Nachdem die \jpaquote{Formalitäten} erledigt sind, kann man Portainer verwenden. Die Startseite sieht für unser System
-erst einmal so aus:
+Nachdem die \jpaquote{Formalitäten} erledigt sind, kann man Portainer verwenden.
+Die Startseite sieht für unser System erst einmal so aus:
 
 \jpaimg{./images/Portainer-03.png}{Die Portainer Startseite}
 
 \subsection{Versionierungssystem}\label{sub:SCM-Manager}
-Als \href{https://de.wikipedia.org/wiki/Versionsverwaltung}{Versionsverwaltung} möchte ich ein Subversion einsetzen.
-Und zwar mit einer Web\-oberfläche. \href{https://www.scm-manager.org/}{SCM-Manager} scheint hierfür ganz gut geeignet
-zu sein. Damit habe ich später die Möglichkeit, von Subversion auf Git zu wechseln.
+Als \href{https://de.wikipedia.org/wiki/Versionsverwaltung}{Versionsverwaltung}
+möchte ich ein Subversion einsetzen. Und zwar mit einer Weboberfläche.
+\href{https://www.scm-manager.org/}{SCM-Manager} scheint hierfür ganz gut
+geeignet zu sein. Damit habe ich später die Möglichkeit, von Subversion auf Git
+zu wechseln.
 
 \subsubsection{Installation des Docker Containers}
-Verwendet wird der offizielle \href{https://hub.docker.com/r/sdorra/scm-manager}{Docker Container} des SCM-Managers.
+Verwendet wird der offizielle
+\href{https://hub.docker.com/r/sdorra/scm-manager}{Docker Container} des
+SCM-Managers.
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 sudo docker volume create --name v_scm_manager
+
+sudo docker volume create \
+ --driver local \
+ --opt type=cifs \
+ --opt device=//192.168.71.10/dockerfs/v_scm_manager \
+ --opt o=username=docker,password=cul8er,file_mode=0777,dir_mode=0777 \
+ --name v_scm_manager
+
+sudo docker volume create \
+ --driver local \
+ --opt type=nfs4 \
+ --opt o=addr=192.168.71.10,rw \
+ --opt device=:/volume1/dockerfs/v_scm_manager \
+ --name v_scm_manager
+
 sudo docker run -dit \
-    --restart unless-stopped \
-    --name scm_manager \
-    -p 8080:8080 \
-    -v v_scm_manager:/var/lib/scm \
-    -d sdorra/scm-manager:latest
+ --restart unless-stopped \
+ --name scm_manager \
+ -p 8080:8080 \
+ -v v_scm_manager:/var/lib/scm \
+ -d sdorra/scm-manager:latest
 \end{lstlisting}
-\caption{Installation der Versionsverwaltung}\label{fig:Installation der Versionsverwaltung}
+    \jpacaption{Installation von SCM-Manager}
 \end{figure}
 
 \subsubsection{Initiale Konfiguration}
-Nachdem das Volume angelegt ist und der Container gestartet wurde, kann man über \code{http://<IP OF SERVER>:8080} die
-Weboberfläche aufrufen. Der Standard Login für den SCM-Manager lautet \code{scmadmin}/\code{scmadmin}. Ein Repository
-ist schnell aus einem Dump importiert, dazu noch ein Benutzer angelegt und schon kann man über die URL\linebreak
-\code{http://<USER>@<IP OF SERVER>:8080/scm/svn/<REPOSITORY>/} das Repo auschecken\linebreak und bearbeiten.
+Nachdem das Volume angelegt ist und der Container gestartet wurde, kann man über
+\code{http://<IP OF SERVER>:8080} die Weboberfläche aufrufen. Der Standard Login
+für den SCM-Manager lautet \code{scmadmin}/\code{scmadmin}. Ein Repository ist
+schnell aus einem Dump importiert, dazu noch ein Benutzer angelegt und schon
+kann man über die URL \code{http://<USER>@<IP OF SERVER>:8080/scm/svn/<REPOSITORY>/}
+das Repo auschecken und bearbeiten.
 
 \subsubsection{SCM-Manager Plugins}
-Der SCM-Manager läßt sich mit Plugins erweitern. Beispiele für solche Plugins sind:
+Der SCM-Manager läßt sich mit Plugins erweitern. Beispiele für solche Plugins
+sind:
 
 \begin{itemize}
-\item \href{https://bitbucket.org/sdorra/scm-activity-plugin/src/default/}{SCM Activity} zur Anzeige der letzten Aktivitäten im Repository.
-\item \href{https://bitbucket.org/sdorra/scm-statistic-plugin/src/default/}{Statistics} zeigt statistische Informationen zum Repository.
+    \item \href{https://bitbucket.org/sdorra/scm-activity-plugin/src/default/}{SCM Activity} zur Anzeige der letzten Aktivitäten im Repository.
+    \item \href{https://bitbucket.org/sdorra/scm-statistic-plugin/src/default/}{Statistics} zeigt statistische Informationen zum Repository.
 \end{itemize}
 
 \subsection{MariaDB}\label{sub:MariaDB}
-Für verschiedene Dinge wird eine Datenbank benötigt. Der Docker Container, den ich ausgewählt habe, ist
-\href{https://hub.docker.com/r/yobasystems/alpine-mariadb}{yobasystems/alpine-mariadb}, weil damit wirklich einfach eine
-neue DB-Instanz aufgesetzt werden kann. Das geht ganz schnell, und zwar so:
+Für verschiedene Dinge wird eine Datenbank benötigt. Der Docker Container, den
+ich ausgewählt habe, ist
+\href{https://hub.docker.com/r/yobasystems/alpine-mariadb}{yobasystems/alpine-mariadb},
+weil damit wirklich einfach eine neue DB-Instanz aufgesetzt werden kann. Das
+geht ganz schnell, und zwar so:
 
 \begin{figure}[H]
-\begin{lstlisting}
-sudo docker volume create --name v_mariadb
+    \begin{lstlisting}
+sudo docker volume create \
+ --driver local \
+ --opt type=cifs \
+ --opt device=//192.168.71.10/dockerfs/v_mariadb \
+ --opt o=username=docker,password=cul8er,file_mode=0777,dir_mode=0777 \
+ --name v_mariadb
+
 sudo docker run -dit \
-    --restart unless-stopped \
-    --name mariadb \
-    -p 3306:3306 \
-    -v v_mariadb:/var/lib/mysql \
-    -e MYSQL_ROOT_PASSWORD=<SECRET PASSWORD HERE> \
-    -d yobasystems/alpine-mariadb:latest \
-    --character-set-server=utf8mb4 \
-    --collation-server=utf8mb4_unicode_ci
+ --restart unless-stopped \
+ --name mariadb \
+ -p 3306:3306 \
+ -v v_mariadb:/var/lib/mysql \
+ -e MYSQL_ROOT_PASSWORD=cul8er \
+ -d yobasystems/alpine-mariadb:latest \
+ --character-set-server=utf8mb4 \
+ --collation-server=utf8mb4_unicode_ci \
+ --innodb-flush-method=fsync
 \end{lstlisting}
-\caption{Installation der MariaDB}\label{fig:Installation der MariaDB}
+    \jpacaption{Installation von MariaDB}
 \end{figure}
 
-Damit wird das Datenbanksystem mit einem \href{https://de.wikipedia.org/wiki/UTF-8}{UTF-8} Zeichensatz initialisiert und
-das \code{Root-Passwort} wird gesetzt. Alles weitere kann man über die Oberfläche \nameref{sub:phpMyAdmin}
-einstellen/erledigen.
+Damit wird das Datenbanksystem mit einem
+\href{https://de.wikipedia.org/wiki/UTF-8}{UTF-8} Zeichensatz initialisiert und
+das \code{Root-Passwort} wird gesetzt. Alles weitere kann man über die
+Oberfläche \nameref{sub:phpMyAdmin} einstellen/erledigen.
 
 \subsection{phpMyAdmin}\label{sub:phpMyAdmin}
-Zur Administration der MariaDB gibt es quasi das Tool schlechthin: \href{https://www.phpmyadmin.net/}{phpMyAdmin}. Und
-es gibt einen offiziellen \href{https://hub.docker.com/r/phpmyadmin/phpmyadmin}{Docker Container} dazu. Diesen möchte
-ich verwenden, um die Datenbank damit zu administrieren.
+Zur Administration der MariaDB gibt es quasi das Tool schlechthin:
+\href{https://www.phpmyadmin.net/}{phpMyAdmin}. Und es gibt einen offiziellen
+\href{https://hub.docker.com/r/phpmyadmin/phpmyadmin}{Docker Container} dazu.
+Diesen möchte ich verwenden, um die Datenbank damit zu administrieren.
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 sudo docker run -dit \
-    --name phpmyadmin \
-    -p 8888:80 \
-    --link mariadb:db \
-    -d phpmyadmin/phpmyadmin:latest
+ --name phpmyadmin \
+ --link mariadb:db \
+ -p 8888:80 \
+ phpmyadmin/phpmyadmin
+
+sudo docker run \
+ --name phpmyadmin \
+ -d -e PMA_HOST=192.168.71.113 \
+ -p 8888:80 \
+ phpmyadmin/phpmyadmin
+
+sudo docker run -dit \
+ --name phpmyadmin \
+ -p 8888:80 \
+ --link mariadb:db \
+ -d phpmyadmin/phpmyadmin:latest
 \end{lstlisting}
-\caption{Installation von phpMyAdmin}\label{fig:Installation von phpMyAdmin}
+    \jpacaption{Installation von phpMyAdmin}
 \end{figure}
 
-Als Port wurde bewusst \code{8888} verwendet, da der Port \code{8080} bereits vom \nameref{sub:SCM-Manager} verwendet
-wird. Zudem wurde darauf verzichtet, den Container immer gestartet zu haben. Dieser soll nur bei Bedarf gestartet und
-danach wieder beendet werden. Deswegen fehlt das Argument \code{--restart unless-stopped} im Aufruf. Die Anmeldung am
-UI erfolgt mit Benutername/Passwort \code{root}/\code{<ROOT PASSWORT>} -- dem Passwort, welches bei der Erstellung des
-\nameref{sub:MariaDB} Containers angegeben wurde.
+Als Port wurde bewusst \code{8888} verwendet, da der Port \code{8080} bereits
+vom \nameref{sub:SCM-Manager} verwendet wird. Zudem wurde darauf verzichtet,
+den Container immer gestartet zu haben. Dieser soll nur bei Bedarf gestartet und
+danach wieder beendet werden. Deswegen fehlt das Argument \code{--restart
+    unless-stopped} im Aufruf. Die Anmeldung am UI erfolgt mit Benutername/Passwort
+\code{root}/\code{<ROOT PASSWORT>} -- dem Passwort, welches bei der Erstellung
+des \nameref{sub:MariaDB} Containers angegeben wurde.
 
 \subsection{Mosquitto}
-Da das \href{https://de.wikipedia.org/wiki/Internet_der_Dinge#targetText=Das%20Internet%20der%20Dinge%20(IdD,und%20Kommunikationstechniken%20zusammenarbeiten%20zu%20lassen.}{IoT},
-also das Internet der Dinge, immer mehr an Bedeutung gewinnt, habe ich mich für diverse Softwareprojekte auch mit diesem
-Thema auseinander gesetzt. Dazu gehört unter anderem das Protokoll \href{https://mqtt.org/}{MQTT}.
-\href{https://mosquitto.org/}{Mosquitto} ist ein Broker, quasi das Herzstück dazu. Verwendet wird ist das offizielle
+Da das
+\href{https://de.wikipedia.org/wiki/Internet_der_Dinge#targetText=Das%20Internet%20der%20Dinge%20(IdD,und%20Kommunikationstechniken%20zusammenarbeiten%20zu%20lassen.}{IoT},
+also das Internet der Dinge, immer mehr an Bedeutung gewinnt, habe ich mich für
+diverse Softwareprojekte auch mit diesem Thema auseinander gesetzt. Dazu gehört
+unter anderem das Protokoll \href{https://mqtt.org/}{MQTT}.
+\href{https://mosquitto.org/}{Mosquitto} ist ein Broker, quasi das Herzstück
+dazu. Verwendet wird ist das offizielle
 \href{https://hub.docker.com/_/eclipse-mosquitto}{eclipse-mosquitto} Image.
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 sudo docker volume create --name v_mosquitto_config
 sudo docker volume create --name v_mosquitto_data
 sudo docker volume create --name v_mosquitto_log
 sudo docker run -dit \
-    --restart unless-stopped \
-    --name mosquitto \
-    -p 1883:1883 \
-    -p 9001:9001 \
-    -v v_mosquitto_config:/mosquitto/config \
-    -v v_mosquitto_data:/mosquitto/data \
-    -v v_mosquitto_log:/mosquitto/log \
-    -d eclipse-mosquitto:latest
+ --restart unless-stopped \
+ --name mosquitto \
+ -p 1883:1883 \
+ -p 9001:9001 \
+ -v v_mosquitto_config:/mosquitto/config \
+ -v v_mosquitto_data:/mosquitto/data \
+ -v v_mosquitto_log:/mosquitto/log \
+ -d eclipse-mosquitto:latest
 \end{lstlisting}
-\caption{Installation von Mosquitto}\label{fig:Installation von Mosquitto}
+    \jpacaption{Installation von Mosquitto}
 \end{figure}
 
-Damit ist der MQTT Broker einsatzbereit und kann beispielsweise mit dem \href{https://mqtt-explorer.com/}{MQTT Explorer}
-getestet werden.
+Damit ist der MQTT Broker einsatzbereit und kann beispielsweise mit dem
+\href{https://mqtt-explorer.com/}{MQTT Explorer} getestet werden.
 
 \subsection{Syncthing}
-Das Synology NAS bringt von Haus aus eine Software mit, über die lokale Ordner und Dateien auf das NAS synchronisiert
-werden können. Da das NAS aber nur noch als Fileserver dienen soll, muss dazu eine Alternative verwendet werden.
-\href{https://syncthing.net/}{Syncthing} scheint mir dazu gut geeignet zu sein. Vor allem, da man diese Software nicht
-nur auf dem PC, sondern auch auf dem Smartphone laufen lassen kann.
+Das Synology NAS bringt von Haus aus eine Software mit, über die lokale Ordner
+und Dateien auf das NAS synchronisiert werden können. Da das NAS aber nur noch
+als Fileserver dienen soll, muss dazu eine Alternative verwendet werden.
+\href{https://syncthing.net/}{Syncthing} scheint mir dazu gut geeignet zu sein.
+Vor allem, da man diese Software nicht nur auf dem PC, sondern auch auf dem
+Smartphone laufen lassen kann.
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 sudo docker volume create --name v_syncthing
 sudo docker run -dit \
-    --restart unless-stopped \
-    --name syncthing \
-    -p 8384:8384 \
-    -p 22000:22000 \
-    -v v_syncthing:/var/syncthing \
-    -d syncthing/syncthing:latest
+ --restart unless-stopped \
+ --name syncthing \
+ -p 8384:8384 \
+ -p 22000:22000 \
+ -v v_syncthing:/var/syncthing \
+ -d syncthing/syncthing:latest
 \end{lstlisting}
-\caption{Installation von Syncthing}\label{fig:Installation von Syncthing}
+    \jpacaption{Installation von Syncthing}
 \end{figure}
 
-Damit ist Syncthing initial eingerichtet. Die Startseite \code{http:\textbackslash\textbackslash<IP OF SERVER>:8384} von
-Syncthing meldet sich dann so:
+Damit ist Syncthing initial eingerichtet. Die Startseite
+\code{http:\textbackslash\textbackslash<IP OF SERVER>:8384} von Syncthing meldet
+sich dann so:
 
 \jpaimg{./images/Syncthing-01.png}{Syncthing, erster Aufruf}
 
-Es wird empfohlen, für die Oberfläche ein Kennwort zu vergeben. Das geht über das Menü oben rechts, \code{Aktionen},
-\code{Einstellungen} und dort den Reiter \code{GUI}:
+Es wird empfohlen, für die Oberfläche ein Kennwort zu vergeben. Das geht über
+das Menü oben rechts, \code{Aktionen}, \code{Einstellungen} und dort den Reiter
+\code{GUI}:
 
 \jpaimg{./images/Syncthing-02.png}{Syncthing, GUI Kennwort}
 
-Danach meldet sich Synthing mit der Standard Startseite. Die weitere Konfiguration bleibt dem Benutzer überlassen.
+Danach meldet sich Synthing mit der Standard Startseite. Die weitere
+Konfiguration bleibt dem Benutzer überlassen.
 
 \jpaimg{./images/Syncthing-03.png}{Syncthing, Standard Startseite}
 
-Als Client für Windows Systeme wird auf der \href{https://syncthing.net/}{Syncthing Seite} das Programm \href{https://github.com/canton7/SyncTrayzor}{SyncTrayzor}
-empfohlen.
+Als Client für Windows Systeme wird auf der
+\href{https://syncthing.net/}{Syncthing Seite} das Programm
+\href{https://github.com/canton7/SyncTrayzor}{SyncTrayzor} empfohlen.
 
 \subsection{NextCloud}
-Die lokale Cloud basiert auf \href{https://nextcloud.com/}{NextCloud}. Von NextCloud wird ein offizielles Image zur
-Verfügung gestellt. Hier möchte ich die bereits installierte Version der Datenbank MariaDB nutzen und dort eine
-Datenbank für NextCloud zur Verfügung stellen. Deswegen lege ich dort eine Datenbank \code{nextcloud} an. Damit die
-Cloud auch Zugriff darauf hat, wird der Benutzer \code{nextcloud} mit dem Kennwort \code{<SECRET PASSWORD HERE>}
+Die lokale Cloud basiert auf \href{https://nextcloud.com/}{NextCloud}. Von
+NextCloud wird ein offizielles Image zur Verfügung gestellt. Hier möchte ich
+die bereits installierte Version der Datenbank MariaDB nutzen und dort eine
+Datenbank für NextCloud zur Verfügung stellen. Deswegen lege ich dort eine
+Datenbank \code{nextcloud} an. Damit die Cloud auch Zugriff darauf hat, wird
+der Benutzer \code{nextcloud} mit dem Kennwort \code{<SECRET PASSWORD HERE>}
 verwendet.
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 sudo docker volume create --name v_nextcloud
 sudo docker run -dit \
-    --restart unless-stopped \
-    --name nextcloud \
-    -e MYSQL_DATABASE=nextcloud \
-    -e MYSQL_USER=nextcloud \
-    -e MYSQL_PASSWORD=<SECRET PASSWORD HERE> \
-    -e MYSQL_HOST=<IP OF SERVER>:3306 \
-    -p 8765:80 \
-    -v v_nextcloud:/var/www/html \
-    -d nextcloud:latest
+ --restart unless-stopped \
+ --name nextcloud \
+ -e MYSQL_DATABASE=nextcloud \
+ -e MYSQL_USER=nextcloud \
+ -e MYSQL_PASSWORD=<SECRET PASSWORD HERE> \
+ -e MYSQL_HOST=<IP OF SERVER>:3306 \
+ -p 8765:80 \
+ -v v_nextcloud:/var/www/html \
+ -d nextcloud:latest
 \end{lstlisting}
-\caption{Installation von NextCloud}\label{fig:Installation von NextCloud}
+    \jpacaption{Installation von NextCloud}
 \end{figure}
 
-Wenn man das \nameref{sec:AIOFile} verwendet, sollte man vor dem ersten Aufruf von NextCloud natürlich über
-\nameref{sub:phpMyAdmin} den Benutzer und die Datenbank angelegt haben.
+Wenn man das \nameref{sec:AIOFile} verwendet, sollte man vor dem ersten Aufruf
+von NextCloud natürlich über \nameref{sub:phpMyAdmin} den Benutzer und die
+Datenbank angelegt haben.
 
 \subsection{Dateiserver}
-Mit dem Dateiserver habe ich mich lange Zeit schwer getan. Das ist der eigentliche Grund, warum das Projekt so viel
-Zeit in Anspruch nimmt. Denn normalerweise legen die Docker Container ihre Dateien lokal ab. Meine Datenmenge, also
-meine Filme, Musik und sonstige Dateien passen nicht lokal auf die SSD der ZBox. Die müssen also nach wie vor auf dem
-NAS liegen. Durch Experimente habe ich dann den für mich besten Weg gefunden: Die Einbindung mit iSCSI und den Rest
-mit Docker.
+Mit dem Dateiserver habe ich mich lange Zeit schwer getan. Das ist der
+eigentliche Grund, warum das Projekt so viel Zeit in Anspruch nimmt. Denn
+normalerweise legen die Docker Container ihre Dateien lokal ab. Meine
+Datenmenge, also meine Filme, Musik und sonstige Dateien passen nicht lokal auf
+die SSD der ZBox. Die müssen also nach wie vor auf dem NAS liegen. Durch
+Experimente habe ich dann den für mich besten Weg gefunden: Die Einbindung mit
+iSCSI und den Rest mit Docker.
 
-Bisher habe ich verschiedene Features über Docker abgebildet, welche auf meinem NAS laufen. Dazu zählt der
-\nameref{sub:SCM-Manager}, die \nameref{sub:MariaDB}, die Administrationsoberfläche \nameref{sub:phpMyAdmin} dazu,
-ebenso wie die Administrationsoberfläche für Docker, \nameref{sub:Portainer}.
+Bisher habe ich verschiedene Features über Docker abgebildet, welche auf meinem
+NAS laufen. Dazu zählt der \nameref{sub:SCM-Manager}, die \nameref{sub:MariaDB},
+die Administrationsoberfläche \nameref{sub:phpMyAdmin} dazu, ebenso wie die
+Administrationsoberfläche für Docker, \nameref{sub:Portainer}.
 
-Den eigentlichen Dateiserver habe ich bis jetzt noch nicht angepackt. Da auf meine NAS bereits ein
-\href{https://www.samba.org/}{Samba} lief, bin ich davon ausgegangen, einen Container zu schnappen, die Konfiguration
-zu übertragen und dann klappt alles. Das war mal wieder ein typischer Fall von \jpaquote{Denkste!} -- so einfach ist das
-leider nicht.
+Den eigentlichen Dateiserver habe ich bis jetzt noch nicht angepackt. Da auf
+meine NAS bereits ein \href{https://www.samba.org/}{Samba} lief, bin ich davon
+ausgegangen, einen Container zu schnappen, die Konfiguration zu übertragen und
+dann klappt alles. Das war mal wieder ein typischer Fall von
+\jpaquote{Denkste!} -- so einfach ist das leider nicht.
 
-Das liegt zum einen daran, dass Synology eine eigene Version von Samba einsetzt. Damit sind Teile der Konfigurationsdatei
-von dem NAS nicht mit einem offiziellen Samba zu verwenden. Zum anderen liegt das aber auch daran, dass Samba eben keine
-einfache Applikation ist. Somit wird ein flexibler Container benötigt, der auch die Anforderungen erfüllt.
+Das liegt zum einen daran, dass Synology eine eigene Version von Samba
+einsetzt. Damit sind Teile der Konfigurationsdatei von dem NAS nicht mit einem
+offiziellen Samba zu verwenden. Zum anderen liegt das aber auch daran, dass
+Samba eben keine einfache Applikation ist. Somit wird ein flexibler Container
+benötigt, der auch die Anforderungen erfüllt.
 
 \subsubsection{Samba Image}
-Zum Glück hat \href{https://github.com/dperson}{David Personette} einen solchen \href{https://hub.docker.com/r/dperson/samba}{Container}
-bereits erstellt. Vielen Dank an dieser Stelle. Diesen Container werde ich dann für mein Projekt verwenden.
-Grundsätzlich wird das eine mehrteilige Aufgabe werden. Zum einen werde ich den Container in meinen Stack integrieren.
-Zum anderen werde ich verschiedene Shell Scripte erstellen, um Benutzer, Shares und anderes in dem Container zu
-konfigurieren. Der Container lässt sich mit dem Image von David Personette ganz einfach einrichten:
+Zum Glück hat \href{https://github.com/dperson}{David Personette} einen solchen
+\href{https://hub.docker.com/r/dperson/samba}{Container} bereits erstellt.
+Vielen Dank an dieser Stelle. Diesen Container werde ich dann für mein Projekt
+verwenden. Grundsätzlich wird das eine mehrteilige Aufgabe werden. Zum einen
+werde ich den Container in meinen Stack integrieren. Zum anderen werde ich
+verschiedene Shell Scripte erstellen, um Benutzer, Shares und anderes in dem
+Container zu konfigurieren. Der Container lässt sich mit dem Image von David
+Personette ganz einfach einrichten:
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 sudo docker volume create --name v_samba_cache
 sudo docker volume create --name v_samba_data
 sudo docker volume create --name v_samba_etc
@@ -753,25 +1115,25 @@ sudo docker volume create --name v_samba_lib
 sudo docker volume create --name v_samba_log
 sudo docker volume create --name v_samba_run
 sudo docker run -dit \
-    --name samba \
-    -p 139:139 \
-    -p 445:445 \
-    -e TZ=DE \
-    -m 512m \
-    -v v_samba_cache:/var/cache/samba \
-    -v v_samba_data:/mount \
-    -v v_samba_etc:/etc \
-    -v v_samba_lib:/var/lib/samba \
-    -v v_samba_log:/var/log/samba \
-    -v v_samba_run:/run/samba \
-    -d dperson/samba:latest
+ --name samba \
+ -p 139:139 \
+ -p 445:445 \
+ -e TZ=DE \
+ -m 512m \
+ -v v_samba_cache:/var/cache/samba \
+ -v v_samba_data:/mount \
+ -v v_samba_etc:/etc \
+ -v v_samba_lib:/var/lib/samba \
+ -v v_samba_log:/var/log/samba \
+ -v v_samba_run:/run/samba \
+ -d dperson/samba:latest
 sudo docker exec -i -t samba /usr/bin/samba.sh -w "WLP"
 sudo docker exec -i -t samba /usr/bin/samba.sh -g "log level = 2"
 sudo docker exec -i -t samba /usr/bin/samba.sh -u "<USER>;<SECRET PASSWORD HERE>"
 sudo docker exec -i -t samba /usr/bin/samba.sh -s "public;/share"
 sudo docker container restart samba
 \end{lstlisting}
-\caption{Samba Container}\label{fig:Samba Container}
+    \jpacaption{Samba Container}
 \end{figure}
 
 \subsection{ClamAV}
@@ -783,54 +1145,57 @@ sudo docker container restart samba
 \subsection{Pi-Hole}
 
 \section{All in One Docker File}\label{sec:AIOFile}
-Die Container habe ich zuerst manuell eingerichtet, um die für mich relevanten Einstellungen herauszufinden. Aber bei
-meinen vielen Versuchen in einer \href{https://www.virtualbox.org/}{Virtual Box} wurde mir das auf die Dauer zu lästig.
-Zudem wollte ich auf meiner ZBox nicht ebenfalls alles manuell einrichten. Deswegen habe ich die einzelnen Schritte bzw.
-Container in einer Docker Compose Datei zusammengefasst. Die sieht dann in etwa so aus:
+Die Container habe ich zuerst manuell eingerichtet, um die für mich relevanten
+Einstellungen herauszufinden. Aber bei meinen vielen Versuchen in einer
+\href{https://www.virtualbox.org/}{Virtual Box} wurde mir das auf die Dauer zu
+lästig. Zudem wollte ich auf meiner ZBox nicht ebenfalls alles manuell
+einrichten. Deswegen habe ich die einzelnen Schritte bzw. Container in einer
+Docker Compose Datei zusammengefasst. Die sieht dann in etwa so aus:
 \\
 \lstinputlisting[caption={All in One Setup},label={All in One Setup},captionpos=b]{./server/aio/docker-compose.yml}
 
 \section{FAQ}
 \begin{tabularx}{\textwidth}{@{}l @{\hspace{0.1cm}}X}
-\textbf{Q:} & Wie bekomme ich eine Shell für bzw.\ in einen Container? \\
-\textbf{A:} & Dazu gibt man in der Kommandozeile folgendes ein: \\
+    \textbf{Q:} & Wie bekomme ich eine Shell für bzw.\ in einen Container? \\
+    \textbf{A:} & Dazu gibt man in der Kommandozeile folgendes ein:        \\
 \end{tabularx}
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 # Maybe there is no bash available, then try with /bin/sh
 sudo docker exec -i -t <NAME OF CONTAINER> /bin/bash
 \end{lstlisting}
-\caption{Container Shell}\label{fig:Container Shell}
+    \jpacaption{Container Shell}
 \end{figure}
 
 \begin{tabularx}{\textwidth}{@{}l @{\hspace{0.1cm}}X}
-\textbf{Q:} & Wie kann ich das MariaDB root-Passwort ändern? \\
-\textbf{A:} & Dazu loggt man sich mit dem root-Account und dem bekannten Passwort ein. Danach führt man folgende SQL
-Statements aus: \\
+    \textbf{Q:} & Wie kann ich das MariaDB root-Passwort ändern?             \\
+    \textbf{A:} & Dazu loggt man sich mit dem root-Account und dem bekannten
+    Passwort ein. Danach führt man folgende SQL Statements aus:              \\
 \end{tabularx}
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 UPDATE mysql.user SET Password=PASSWORD('<NEW PASSWORD HERE>') WHERE User='root';
 FLUSH PRIVILEGES;
 \end{lstlisting}
-\caption{MariaDB Root Password ändern}\label{fig:MariaDB Root Password ändern}
+    \jpacaption{MariaDB Root Password ändern}
 \end{figure}
 
 \begin{tabularx}{\textwidth}{@{}l @{\hspace{0.1cm}}X}
-\textbf{Q:} & Was ist ein Docker Stack? \\
-\textbf{A:} & Als einen Docker Stack bezeichnet man einen oder mehrere Container, die mit weiteren Einstellungen in
-einer \code{docker-compose.yml} Datei zusammengefasst sind. \\
+    \textbf{Q:} & Was ist ein Docker Stack?                                \\
+    \textbf{A:} & Als einen Docker Stack bezeichnet man einen oder mehrere
+    Container, die mit weiteren Einstellungen in einer \code{docker-compose.yml}
+    Datei zusammengefasst sind.                                            \\
 \end{tabularx}
 
 \begin{tabularx}{\textwidth}{@{}l @{\hspace{0.1cm}}X}
-\textbf{Q:} & Wie kann ich einen Docker Stack starten/anhalten? \\
-\textbf{A:} & Dazu führt man auf der Kommandozeile folgendes aus: \\
+    \textbf{Q:} & Wie kann ich einen Docker Stack starten/anhalten?   \\
+    \textbf{A:} & Dazu führt man auf der Kommandozeile folgendes aus: \\
 \end{tabularx}
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 cd <NAME OF STACK>
 # To start the docker stack
 # The option '-d' runs the stack in the background
@@ -838,23 +1203,29 @@ sudo docker-compose up -d
 # To stop the docker stack
 sudo docker-compose stop
 \end{lstlisting}
-\caption{Start/Stop Docker Stack}\label{fig:Start/Stop Docker Stack}
+    \jpacaption{Start/Stop Docker Stack}
 \end{figure}
 
 \begin{tabularx}{\textwidth}{@{}l @{\hspace{0.1cm}}X}
-\textbf{Q:} & Wie kann ich eine Datei aus einem Docker Container kopieren? \\
-\textbf{A:} & Dazu führt man auf der Kommandozeile folgendes aus: \\
+    \textbf{Q:} & Wie kann ich eine Datei aus einem Docker Container kopieren? \\
+    \textbf{A:} & Dazu führt man auf der Kommandozeile folgendes aus:          \\
 \end{tabularx}
 
 \begin{figure}[H]
-\begin{lstlisting}
+    \begin{lstlisting}
 sudo docker cp <NAME OF CONTAINER>:<FILE PATH WITHIN CONTAINER> <HOST PATH TARGET>
 \end{lstlisting}
-\caption{Datei aus Container kopieren}\label{fig:Datei aus Container kopieren}
+    \jpacaption{Datei aus Container kopieren}
 \end{figure}
 
-\newpage
+\newpage\thispagestyle{fancy}
+\listoffigures\thispagestyle{fancy}
 \phantomsection{}
 \addcontentsline{toc}{section}{Abbildungsverzeichnis}
-\listoffigures\thispagestyle{fancy}
+
+\newpage\thispagestyle{fancy}
+\listoftables\thispagestyle{fancy}
+\phantomsection{}
+\addcontentsline{toc}{section}{Tabellenverzeichnis}
+
 \end{document}
